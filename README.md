@@ -1,6 +1,6 @@
 # MinGW-W64 Docker Image
 
-Builds [mingw-w64][] toolchain in docker for targeting 64-bit Windows from Ubuntu 18.04.
+Builds [mingw-w64][] toolchain in docker for targeting 64-bit Windows from Ubuntu 20.04.
 
 This docker image will contain following software built from source:
 
