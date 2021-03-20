@@ -3,6 +3,7 @@ FROM ubuntu:20.04
 WORKDIR /mnt
 
 ENV MINGW=/mingw
+ENV MINGW_CMAKE=/mingw/toolchain.cmake
 
 ARG PKG_CONFIG_VERSION=0.29.2
 ARG CMAKE_VERSION=3.19.2
@@ -14,12 +15,17 @@ ARG NVCC_VERSION=11.2.0
 
 SHELL [ "/bin/bash", "-c" ]
 
+COPY sources.list /etc/apt/sources.list
+COPY toolchain.cmake /mingw/toolchain.cmake
+
 RUN set -ex \
     \
     && apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get upgrade --no-install-recommends -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-        ca-certificates \
+        vim \
+		nano \
+		ca-certificates \
         gcc-10 \
         g++-10 \
         zlib1g-dev \

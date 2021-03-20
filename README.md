@@ -1,4 +1,4 @@
-# mingw-w64
+# mingw-w64 - Modifications done by ViperSLM
 
 Builds [mingw-w64][] toolchain in docker for targeting 64-bit Windows from Ubuntu 18.04.
 
@@ -13,23 +13,32 @@ This docker image will contain following software built from source:
 
 Extra binaries:
 
-* extra Ubuntu packages: `wget`, `patch`, `bison`, `flex`, `yasm`, `make`, `ninja`, `meson`, `zip`.
+* extra Ubuntu packages: `wget`, `patch`, `bison`, `flex`, `yasm`, `make`, `ninja`, `meson`, `zip`, `vim`, `nano`.
 * [nvcc][] v11.2.0
 
 Custom built binaries are installed into `/usr/local` prefix. [pkg-config][] will look for packages in `/mingw` prefix. `nvcc` is available in `/usr/local/cuda/bin` folder.
 
 # Using
 
+The `sources.list` inside the repo uses a mirror located in Australia. You may substitute this with your own sources.list file if you wish.
+
+If you prefer to use the default ubuntu mirror, simply remove the following line from the Dockerfile `(Line 18)`:
+`COPY sources.list /etc/apt/sources.list`
+
 Execute following to run your shell script, makefile or other build script from current folder:
 
     docker run --rm -ti -v `pwd`:/mnt mmozeiko/mingw-w64 ./build.sh
 
-For autotools builds add following arguments:
+For builds that use autotools, add the following arguments:
 
     --prefix=${MINGW} \
     --host=x86_64-w64-mingw32 \
 
-For cmake builds add following arguments:
+For builds that use CMake, you can supply the included toolchain by adding the following argument:
+
+    -DCMAKE_TOOLCHAIN_FILE=${MINGW_CMAKE}
+
+Alternatively, if you prefer to manually set the settings yourself, add the following arguments:
 
     -DCMAKE_SYSTEM_NAME=Windows \
     -DCMAKE_INSTALL_PREFIX=${MINGW} \
