@@ -1,4 +1,4 @@
-# mingw-w64 - Modifications done by ViperSLM
+# MinGW-W64 Docker Image
 
 Builds [mingw-w64][] toolchain in docker for targeting 64-bit Windows from Ubuntu 18.04.
 
