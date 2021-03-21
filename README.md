@@ -18,6 +18,13 @@ Extra binaries:
 
 Custom built binaries are installed into `/usr/local` prefix. [pkg-config][] will look for packages in `/mingw` prefix. `nvcc` is available in `/usr/local/cuda/bin` folder.
 
+# Building
+To build this docker image, type in the following command while inside the repository:
+
+    docker build -t mingw-w64 .
+
+This works on a Linux system with Docker already installed, or a Windows 10 system running Docker Desktop.
+
 # Using
 
 The `sources.list` inside the repo uses a mirror located in Australia. You may substitute this with your own sources.list file if you wish.
