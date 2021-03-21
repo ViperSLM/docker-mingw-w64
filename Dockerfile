@@ -13,6 +13,10 @@ ARG GCC_VERSION=10.2.0
 ARG NASM_VERSION=2.15.02
 ARG NVCC_VERSION=11.2.0
 
+ARG SDL2_VERSION=2.0.14
+ARG SDL2_MIXER_VERSION=2.0.4
+ARG SDL2_NET_VERSION=2.0.1
+
 SHELL [ "/bin/bash", "-c" ]
 
 COPY sources.list /etc/apt/sources.list
@@ -67,6 +71,7 @@ RUN set -ex \
     && wget -q https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/mingw-w64-v${MINGW_VERSION}.tar.bz2 -O - | tar -xj \
     && wget -q https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.xz -O - | tar -xJ \
     && wget -q https://www.nasm.us/pub/nasm/releasebuilds/${NASM_VERSION}/nasm-${NASM_VERSION}.tar.xz -O - | tar -xJ \
+	&& wget -q https://libsdl.org/release/SDL2-${SDL2_VERSION}.tar.gz -O - | tar -xz \
     \
     && wget -q https://raw.githubusercontent.com/msys2/MINGW-packages/master/mingw-w64-gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch -O - | \
         patch -d gcc-${GCC_VERSION} -p 1 \
@@ -173,6 +178,13 @@ RUN set -ex \
     && make -j`nproc` \
     && make install \
     && cd .. \
+	&& cd SDL2-${SDL2_VERSION} \
+	&& mkdir mingw \
+	&& cd mingw \
+	&& cmake -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_INSTALL_PREFIX=${MINGW} -DCMAKE_FIND_ROOT_PATH=${MINGW} -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ -DCMAKE_RC_COMPILER=x86_64-w64-mingw32-windres .. \
+	&& make -j`nproc` \
+	&& make install \
+	&& cd ../.. \
     \
     && rm -r pkg-config-${PKG_CONFIG_VERSION} \
     && rm -r cmake-${CMAKE_VERSION} \
@@ -180,6 +192,7 @@ RUN set -ex \
     && rm -r mingw-w64 mingw-w64-v${MINGW_VERSION} \
     && rm -r gcc gcc-${GCC_VERSION} \
     && rm -r nasm-${NASM_VERSION} \
+	&& rm -r SDL2-${SDL2_VERSION} \
     \
     && apt-get remove --purge -y file gcc-10 g++-10 zlib1g-dev libssl-dev libgmp-dev libmpfr-dev libmpc-dev libisl-dev python-lxml python-mako \
     \
