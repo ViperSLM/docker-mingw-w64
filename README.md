@@ -38,7 +38,7 @@ For builds that use CMake, you can supply the included toolchain by adding the f
 
     -DCMAKE_TOOLCHAIN_FILE=${MINGW_CMAKE}
 
-Alternatively, if you prefer to manually set the settings yourself, add the following arguments:
+Alternatively, if you prefer to manually set the settings yourself or if a CMake project doesn't properly process a line or two, add the following arguments:
 
     -DCMAKE_SYSTEM_NAME=Windows \
     -DCMAKE_INSTALL_PREFIX=${MINGW} \
