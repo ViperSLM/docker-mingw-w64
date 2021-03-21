@@ -1,8 +1,8 @@
-# MinGW-W64 Docker Image
+# MinGW-W64 Docker Image w/ SDL2 libraries
 
-Builds [mingw-w64][] toolchain in docker for targeting 64-bit Windows from Ubuntu 20.04.
+Builds [mingw-w64][] toolchain in docker for targeting 64-bit Windows from Ubuntu 20.04. Also downloads and compiles SDL2 and a few extra components ([SDL2_mixer], [SDL2_net]) to help with compiling applications that uses these libraries.
 
-This docker image will contain following software built from source:
+This docker image will contain the following software built from source:
 
 * [pkg-config][] v0.29.2
 * [cmake][] v3.19.2
@@ -10,6 +10,9 @@ This docker image will contain following software built from source:
 * [mingw-w64][] v8.0.0
 * [gcc][] v10.2.0
 * [nasm][] v2.15.02
+* [SDL2][] v2.0.14
+* [SDL2_mixer][] v2.0.4
+* [SDL2_net][] v2.0.1
 
 Extra binaries:
 
@@ -64,3 +67,6 @@ Alternatively, if you prefer to manually set the settings yourself or if a CMake
 [gcc]: https://gcc.gnu.org/
 [nasm]: https://nasm.us/
 [nvcc]: https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html
+[SDL2]: https://libsdl.org/index.php
+[SDL2_mixer]: https://www.libsdl.org/projects/SDL_mixer
+[SDL2_net]: https://www.libsdl.org/projects/SDL_net/
