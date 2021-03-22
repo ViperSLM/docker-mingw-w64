@@ -66,6 +66,16 @@ Alternatively, if you prefer to manually set the settings yourself or if a CMake
     -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ \
     -DCMAKE_RC_COMPILER=x86_64-w64-mingw32-windres \
 
+# FindDLL Bash Script
+This convenient utility will list down DLL files that the specified executable needs.
+    
+    Usage: finddll [.exe]
+
+Here's an example on how it's used:
+
+![image](https://user-images.githubusercontent.com/61650364/111956663-f2096c80-8b3a-11eb-9839-362a6250b877.png)
+
+
 [pkg-config]: https://www.freedesktop.org/wiki/Software/pkg-config/
 [cmake]: https://cmake.org/
 [binutils]: https://www.gnu.org/software/binutils/
