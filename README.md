@@ -48,6 +48,7 @@ For builds that use CMake, you can supply the included toolchain by adding the f
 Alternatively, if you prefer to manually set the settings yourself or if a CMake project doesn't properly process a line or two, add the following arguments:
 
     -DCMAKE_SYSTEM_NAME=Windows \
+    -DCMAKE_SYSTEM_PROCESSOR=AMD64 \
     -DCMAKE_INSTALL_PREFIX=${MINGW} \
     -DCMAKE_FIND_ROOT_PATH=${MINGW} \
     -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
