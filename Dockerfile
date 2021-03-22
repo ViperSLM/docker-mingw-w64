@@ -72,7 +72,7 @@ RUN set -ex \
     && wget -q https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/mingw-w64-v${MINGW_VERSION}.tar.bz2 -O - | tar -xj \
     && wget -q https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.xz -O - | tar -xJ \
     && wget -q https://www.nasm.us/pub/nasm/releasebuilds/${NASM_VERSION}/nasm-${NASM_VERSION}.tar.xz -O - | tar -xJ \
-	&& wget -q https://libsdl.org/release/SDL2-${SDL2_VERSION}.tar.gz -O - | tar -xz \
+    && wget -q https://libsdl.org/release/SDL2-${SDL2_VERSION}.tar.gz -O - | tar -xz \
     \
     && wget -q https://raw.githubusercontent.com/msys2/MINGW-packages/master/mingw-w64-gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch -O - | \
         patch -d gcc-${GCC_VERSION} -p 1 \
@@ -179,12 +179,12 @@ RUN set -ex \
     && make -j`nproc` \
     && make install \
     && cd .. \
-	&& cd SDL2-${SDL2_VERSION} \
-	&& ./configure --prefix=${MINGW} --host=x86_64-w64-mingw32 \
-	&& make -j`nproc` \
-	&& make install \
-	&& ln -s /mingw/bin/sdl2-config /usr/local/bin/x86_64-w64-mingw32-sdl2-config \
-	&& cd .. \
+    && cd SDL2-${SDL2_VERSION} \
+    && ./configure --prefix=${MINGW} --host=x86_64-w64-mingw32 \
+    && make -j`nproc` \
+    && make install \
+    && ln -s /mingw/bin/sdl2-config /usr/local/bin/x86_64-w64-mingw32-sdl2-config \
+    && cd .. \
     \
     && rm -r pkg-config-${PKG_CONFIG_VERSION} \
     && rm -r cmake-${CMAKE_VERSION} \
@@ -210,4 +210,4 @@ RUN set -ex \
     && apt-get remove --purge -y gnupg \
     && apt-get autoremove --purge -y \
     && apt-get clean \
-	&& chmod +x /usr/local/bin/finddll
+    && chmod +x /usr/local/bin/finddll
