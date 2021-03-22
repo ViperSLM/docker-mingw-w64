@@ -14,6 +14,8 @@ This docker image will contain the following software built from source:
 * [SDL2_mixer][] v2.0.4
 * [SDL2_net][] v2.0.1
 
+SDL2_mixer and SDL2_net haven't been added into the image yet.
+
 Extra binaries:
 
 * extra Ubuntu packages: `wget`, `patch`, `bison`, `flex`, `yasm`, `make`, `ninja`, `meson`, `zip`, `vim`, `nano`.
