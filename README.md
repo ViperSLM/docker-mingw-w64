@@ -2,7 +2,7 @@
 
 Builds [mingw-w64][] toolchain in docker for targeting 64-bit Windows from Ubuntu 20.04.
 
-This docker image will contain following software built from source:
+This docker image contains the following software built from source:
 
 * [pkg-config][] v0.29.2
 * [cmake][] v3.19.2
@@ -32,9 +32,17 @@ The `sources.list` inside the repo uses a mirror located in Australia. You may s
 If you prefer to use the default ubuntu mirror, simply remove the following line from the Dockerfile `(Line 18)`:
 `COPY sources.list /etc/apt/sources.list`
 
-Execute following to run your shell script, makefile or other build script from current folder:
+To start a new container with this image, type in the following:
 
-    docker run --rm -ti -v `pwd`:/mnt mmozeiko/mingw-w64 ./build.sh
+    docker run -d -ti --name [Container name] mingw-w64
+    
+You can choose whether if you want the new container to have a name or not. Simply omit `--name` from the command line if you don't want to name the container.
+
+For executing shell scripts, makefiles or other build scripts, you can type in the following:
+
+    docker run --rm -ti -v `pwd`:/mnt mingw-w64 ./build.sh
+
+Replace the `./build.sh` with your build/shell script
 
 For builds that use autotools, add the following arguments:
 
