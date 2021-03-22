@@ -179,12 +179,11 @@ RUN set -ex \
     && make install \
     && cd .. \
 	&& cd SDL2-${SDL2_VERSION} \
-	&& mkdir mingw \
-	&& cd mingw \
-	&& cmake -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_INSTALL_PREFIX=${MINGW} -DCMAKE_FIND_ROOT_PATH=${MINGW} -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ -DCMAKE_RC_COMPILER=x86_64-w64-mingw32-windres .. \
+	&& ./configure --prefix=${MINGW} --host=x86_64-w64-mingw32 \
 	&& make -j`nproc` \
 	&& make install \
-	&& cd ../.. \
+	&& ln -s /mingw/bin/sdl2-config /usr/local/bin/x86_64-w64-mingw32-sdl2-config \
+	&& cd .. \
     \
     && rm -r pkg-config-${PKG_CONFIG_VERSION} \
     && rm -r cmake-${CMAKE_VERSION} \
