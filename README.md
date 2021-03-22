@@ -45,6 +45,8 @@ For executing shell scripts, makefiles or other build scripts, you can type in t
 
     docker run --rm -ti -v `pwd`:/mnt mingw-w64-sdl2 ./build.sh
 
+Replace the `./build.sh` with your build/shell script
+
 For builds that use autotools, add the following arguments:
 
     --prefix=${MINGW} \
