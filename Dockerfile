@@ -21,6 +21,7 @@ SHELL [ "/bin/bash", "-c" ]
 
 COPY sources.list /etc/apt/sources.list
 COPY toolchain.cmake /mingw/toolchain.cmake
+COPY finddll.sh /usr/local/bin/finddll
 
 RUN set -ex \
     \
@@ -208,4 +209,5 @@ RUN set -ex \
     \
     && apt-get remove --purge -y gnupg \
     && apt-get autoremove --purge -y \
-    && apt-get clean
+    && apt-get clean \
+	&& chmod +x /usr/local/bin/finddll
