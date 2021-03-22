@@ -24,7 +24,7 @@ Custom built binaries are installed into `/usr/local` prefix. [pkg-config][] wil
 # Building
 To build this docker image, type in the following command while inside the repository:
 
-    docker build -t mingw-w64 .
+    docker build -t mingw-w64-sdl2 .
 
 This works on a Linux system with Docker already installed, or a Windows 10 system running Docker Desktop.
 
@@ -35,9 +35,15 @@ The `sources.list` inside the repo uses a mirror located in Australia. You may s
 If you prefer to use the default ubuntu mirror, simply remove the following line from the Dockerfile `(Line 18)`:
 `COPY sources.list /etc/apt/sources.list`
 
-Execute following to run your shell script, makefile or other build script from current folder:
+To start a new container with this image, type in the following:
+    
+    docker run -d -ti --name [Container name] mingw-w64-sdl2
 
-    docker run --rm -ti -v `pwd`:/mnt mmozeiko/mingw-w64 ./build.sh
+You can choose whether if you want the new container to have a name or not. Simply omit `--name` from the command line if you don't want to name the container.
+
+For executing shell scripts, makefiles or other build scripts, you can type in the following:
+
+    docker run --rm -ti -v `pwd`:/mnt mingw-w64-sdl2 ./build.sh
 
 For builds that use autotools, add the following arguments:
 
