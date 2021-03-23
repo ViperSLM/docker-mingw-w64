@@ -14,7 +14,7 @@ This docker image will contain the following software built from source:
 * [SDL2_mixer][] v2.0.4
 * [SDL2_net][] v2.0.1
 
-SDL2_mixer hasn't been added into the image yet.
+SDL2_mixer is in the form of development libraries for MinGW-W64.
 
 Extra binaries:
 
