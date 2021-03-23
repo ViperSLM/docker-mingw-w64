@@ -13,7 +13,7 @@ This docker image contains the following software built from source:
 
 Extra binaries:
 
-* extra Ubuntu packages: `wget`, `patch`, `bison`, `flex`, `yasm`, `make`, `ninja`, `meson`, `zip`, `vim`, `nano`.
+* extra Ubuntu packages: `wget`, `patch`, `bison`, `flex`, `yasm`, `make`, `ninja`, `meson`, `zip`, `vim`, `nano`, `dos2unix`.
 * [nvcc][] v11.2.0
 
 Custom built binaries are installed into `/usr/local` prefix. [pkg-config][] will look for packages in `/mingw` prefix. `nvcc` is available in `/usr/local/cuda/bin` folder.
