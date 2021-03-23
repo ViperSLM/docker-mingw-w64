@@ -74,6 +74,7 @@ RUN set -ex \
     && wget -q https://www.nasm.us/pub/nasm/releasebuilds/${NASM_VERSION}/nasm-${NASM_VERSION}.tar.xz -O - | tar -xJ \
     && wget -q https://libsdl.org/release/SDL2-${SDL2_VERSION}.tar.gz -O - | tar -xz \
     && wget -q https://www.libsdl.org/projects/SDL_net/release/SDL2_net-${SDL2_NET_VERSION}.tar.gz -O - | tar -xz \
+    && wget -q https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-${SDL2_MIXER_VERSION}-mingw.tar.gz -O - | tar -xz \
 	\
     && wget -q https://raw.githubusercontent.com/msys2/MINGW-packages/master/mingw-w64-gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch -O - | \
         patch -d gcc-${GCC_VERSION} -p 1 \
@@ -186,11 +187,14 @@ RUN set -ex \
     && make install \
     && ln -s /mingw/bin/sdl2-config /usr/local/bin/x86_64-w64-mingw32-sdl2-config \
     && cd .. \
-	&& cd SDL2_net-${SDL2_NET_VERSION} \
-	&& ./configure --prefix=${MINGW} --host=x86_64-w64-mingw32 \
-	&& make -j`nproc` \
-	&& make install \
-	&& cd .. \
+    && cd SDL2_net-${SDL2_NET_VERSION} \
+    && ./configure --prefix=${MINGW} --host=x86_64-w64-mingw32 \
+    && make -j`nproc` \
+    && make install \
+    && cd .. \
+    && cd SDL2_mixer-${SDL2_MIXER_VERSION} \
+    && cp -vr x86_64-w64-mingw32/* /mingw \
+    && cd .. \
     \
     && rm -r pkg-config-${PKG_CONFIG_VERSION} \
     && rm -r cmake-${CMAKE_VERSION} \
@@ -200,6 +204,7 @@ RUN set -ex \
     && rm -r nasm-${NASM_VERSION} \
 	&& rm -r SDL2-${SDL2_VERSION} \
 	&& rm -r SDL2_net-${SDL2_NET_VERSION} \
+    && rm -r SDL2_mixer-${SDL2_MIXER_VERSION} \
     \
     && apt-get remove --purge -y file gcc-10 g++-10 zlib1g-dev libssl-dev libgmp-dev libmpfr-dev libmpc-dev libisl-dev python-lxml python-mako \
     \
@@ -218,3 +223,5 @@ RUN set -ex \
     && apt-get autoremove --purge -y \
     && apt-get clean \
     && chmod +x /usr/local/bin/finddll
+
+COPY SDL2_mixer.pc /mingw/lib/pkgconfig/SDL2_mixer.pc
