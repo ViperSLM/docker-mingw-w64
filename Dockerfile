@@ -25,8 +25,8 @@ RUN set -ex \
     && DEBIAN_FRONTEND=noninteractive apt-get upgrade --no-install-recommends -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
         vim \
-		nano \
-		ca-certificates \
+	nano \
+	ca-certificates \
         gcc-10 \
         g++-10 \
         zlib1g-dev \
@@ -59,10 +59,10 @@ RUN set -ex \
         wget \
         zip \
         git \
-		dos2unix \
+	dos2unix \
     \
     && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 1000 --slave /usr/bin/g++ g++ /usr/bin/g++-10 \
-	&& dos2unix /usr/local/bin/finddll \
+    && dos2unix /usr/local/bin/finddll \
     \
     && wget -q https://pkg-config.freedesktop.org/releases/pkg-config-${PKG_CONFIG_VERSION}.tar.gz -O - | tar -xz \
     && wget -q https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz -O - | tar -xz \
@@ -200,4 +200,4 @@ RUN set -ex \
     && apt-get remove --purge -y gnupg \
     && apt-get autoremove --purge -y \
     && apt-get clean \
-	&& chmod +x /usr/local/bin/finddll
+    && chmod +x /usr/local/bin/finddll
