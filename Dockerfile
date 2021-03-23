@@ -204,8 +204,8 @@ RUN set -ex \
     && rm -r mingw-w64 mingw-w64-v${MINGW_VERSION} \
     && rm -r gcc gcc-${GCC_VERSION} \
     && rm -r nasm-${NASM_VERSION} \
-	&& rm -r SDL2-${SDL2_VERSION} \
-	&& rm -r SDL2_net-${SDL2_NET_VERSION} \
+    && rm -r SDL2-${SDL2_VERSION} \
+    && rm -r SDL2_net-${SDL2_NET_VERSION} \
     && rm -r SDL2_mixer-${SDL2_MIXER_VERSION} \
     \
     && apt-get remove --purge -y file gcc-10 g++-10 zlib1g-dev libssl-dev libgmp-dev libmpfr-dev libmpc-dev libisl-dev python-lxml python-mako \
