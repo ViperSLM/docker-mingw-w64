@@ -37,12 +37,25 @@ Example:
 
 For builds that use autotools, add the following arguments:
 
-    --prefix=${MINGW} \
-    --host=x86_64-w64-mingw32 \
+32-bit (i686):
 
-For builds that use CMake, you can supply the included toolchain by adding the following argument:
+    --prefix=${MINGW_R} \
+    --host=${MINGW} \
+    
+64-bit (AMD64):
+    
+    --prefix=${MINGW_64_R} \
+    --host${MINGW_64} \
 
-    -DCMAKE_TOOLCHAIN_FILE=/usr/local/i686-w64-mingw32/toolchain.cmake
+For builds that use CMake, you can supply the included toolchain by adding either:
+
+32-bit (i686):
+
+    -DCMAKE_TOOLCHAIN_FILE=${MINGW_R}/toolchain.cmake
+    
+64-bit (AMD64):
+
+    -DCMAKE_TOOLCHAIN_FILE=${MINGW_64_R}/toolchain.cmake
 
 Alternatively, if you prefer to manually set the settings yourself or if a CMake project doesn't properly process a line or two, you can add the following arguments:
 
