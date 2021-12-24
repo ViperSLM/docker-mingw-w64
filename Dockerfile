@@ -34,6 +34,7 @@ RUN set -ex \
     && wget -q https://ftp.gnu.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.xz \
     && wget -q https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/mingw-w64-v${MINGW_VERSION}.tar.bz2 \
     && wget -q https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.xz \
+    && wget -q https://raw.githubusercontent.com/msys2/MINGW-packages/master/mingw-w64-gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch \
     && cd .. \
     \
     && echo "Installing CMake..." \
@@ -99,8 +100,7 @@ RUN set -ex \
     && echo "Compiling GCC (Compiler)..." \
     && tar xJf ../packages/gcc-${GCC_VERSION}.tar.xz \
     && echo "Patching..." \
-    && wget -q https://raw.githubusercontent.com/msys2/MINGW-packages/master/mingw-w64-gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch -O - | \
-        patch -d gcc-${GCC_VERSION} -p 1 \
+    && cat ../packages/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch | patch -d gcc-${GCC_VERSION} -p 1 \
     && mkdir gcc && cd gcc \
     && ../gcc-${GCC_VERSION}/configure \
         --prefix=/usr/local \
@@ -159,6 +159,118 @@ RUN set -ex \
     \
     && echo "i686 MinGW-W64 toolchain has been successfully installed!" \
     \
+    && echo "Installing x86_64 MinGW-W64 Toolchain..." \
+    && mkdir -p ${MINGW_64_R}/include ${MINGW_64_R}/lib/pkgconfig \
+    && chmod 0777 -R /mnt ${MINGW_64_R} \
+    && mkdir /build-x86_64 && cd /build-x86_64 \
+    \
+    && echo "Compiling pkg-config v${PKG_CONFIG_VERSION}..." \
+    && tar xzf ../packages/pkg-config-${PKG_CONFIG_VERSION}.tar.gz && cd pkg-config-${PKG_CONFIG_VERSION} \
+    && ./configure \
+        --prefix=${MINGW_64_R} \
+        --with-pc-path=${MINGW_64_R}/lib/pkgconfig \
+        --with-internal-glib \
+        --disable-shared \
+        --disable-nls \
+    && make -j`nproc` \
+    && make install \
+    && rm ${MINGW_64_R}/bin/x86_64-unknown-linux-gnu-pkg-config \
+    && ln -f ${MINGW_64_R}/bin/pkg-config /usr/local/bin/${MINGW_64}-pkg-config \
+    && cd .. \
+    \
+    && echo "Compiling Binutils..." \
+    && tar xJf ../packages/binutils-${BINUTILS_VERSION}.tar.xz \
+    && cd binutils-${BINUTILS_VERSION} \
+    && ./configure \
+        --prefix=/usr/local \
+        --target=${MINGW_64} \
+        --disable-shared \
+        --enable-static \
+        --disable-lto \
+        --disable-plugins \
+        --disable-multilib \
+        --disable-nls \
+        --disable-werror \
+        --with-system-zlib \
+    && make -j`nproc` \
+    && make install \
+    && cd .. \
+    \
+    && echo "Installing MinGW-W64 Headers..." \
+    && tar xjf ../packages/mingw-w64-v${MINGW_VERSION}.tar.bz2 \
+    && mkdir mingw-w64 && cd mingw-w64 \
+    && ../mingw-w64-v${MINGW_VERSION}/mingw-w64-headers/configure \
+        --prefix=${MINGW_64_R} \
+        --host=${MINGW_64} \
+        --enable-sdk=all \
+        --enable-secure-api \
+    && make install \
+    && cd .. \
+    \
+    && echo "Compiling GCC (Compiler)..." \
+    && tar xJf ../packages/gcc-${GCC_VERSION}.tar.xz \
+    && echo "Patching..." \
+    && cat ../packages/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch | patch -d gcc-${GCC_VERSION} -p 1 \
+    && mkdir gcc && cd gcc \
+    && ../gcc-${GCC_VERSION}/configure \
+        --prefix=/usr/local \
+        --target=${MINGW_64} \
+        --enable-languages=c,c++ \
+        --disable-shared \
+        --enable-static \
+        --enable-threads=posix \
+        --with-system-zlib \
+        --enable-libgomp \
+        --enable-libatomic \
+        --enable-graphite \
+        --disable-libstdcxx-pch \
+        --disable-libstdcxx-debug \
+        --disable-multilib \
+        --disable-lto \
+        --disable-nls \
+        --disable-werror \
+    && make all-gcc -j`nproc` \
+    && make install-gcc \
+    && cd .. \
+    \
+    && echo "Compiling MinGW-W64 Runtime and Libraries..." \
+    && cd mingw-w64 \
+    && ../mingw-w64-v${MINGW_VERSION}/mingw-w64-crt/configure \
+        --prefix=${MINGW_64_R} \
+        --host=${MINGW_64} \
+        --enable-wildcard \
+        --disable-lib32 \
+        --enable-lib64 \
+    && make -j`nproc` \
+    && make install \
+    && ../mingw-w64-v${MINGW_VERSION}/mingw-w64-libraries/winpthreads/configure \
+        --prefix=${MINGW_64_R} \
+        --host=${MINGW_64} \
+        --enable-static \
+        --disable-shared \
+    && make -j`nproc` \
+    && make install \
+    && cd .. \
+    \
+    && echo "Compiling GCC (Full)..." \
+    && cd gcc \
+    && make -j`nproc` \
+    && make install \
+    && cd .. \
+    \
+    && echo "Cleaning up..." \
+    && cd / && rm -rf build-x86_64 \
+    && echo "Copying FindDLL and CMake toolchain..." \
+    && cp -r /temp/finddll/finddll_64.sh /usr/local/bin/finddll_64 \
+    && dos2unix /usr/local/bin/finddll_64 \
+    && chmod +x /usr/local/bin/finddll_64 \
+    && cp -r /temp/toolchains/x86_64.cmake ${MINGW_64_R}/toolchain.cmake \
+    && dos2unix ${MINGW_64_R}/toolchain.cmake \
+    \
+    && echo "x86_64 MinGW-W64 toolchain has been successfully installed!" \
+    \
     && echo "Cleaning up..." \
     && apt-get remove -qq --purge -y gcc-10 g++-10 zlib1g-dev libssl-dev libgmp-dev libmpfr-dev libmpc-dev libisl-dev python-lxml python-mako \
+    && rm -rf /temp \
+    && rm -rf /packages \
     \
