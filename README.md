@@ -23,6 +23,10 @@ To build this docker image, type in the following command while inside the repos
 
     docker build -t [Image name] .
 
+Note that the build process may take a long time, depending on your computers's speed (The more CPU cores, the better),
+to complete as it is compiling both the x86 and x86_64 toolchains so maybe find something to do or grab yourself a drink as you wait out
+the time.
+
 Append [Image name] with a name you want to choose for the image. (e.g. mingw)
 
 # Usage
