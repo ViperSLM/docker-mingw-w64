@@ -1,9 +1,6 @@
 # MinGW-W64 Docker Image (Dual Architectures)
 This Docker image builds a [mingw-w64][] toolchain which can target either 32-bit or 64-bit Windows via Ubuntu 20.04
 
-(64-bit toolchain not implemented yet!!)
-
-
 The following software is built from source:
 * [pkg-config][] v0.29.2
 * [cmake][] v3.21.3
@@ -32,9 +29,11 @@ Append [Image name] with a name you want to choose for the image. (e.g. mingw)
 There are many ways on how you can use this Docker image. You can use it to directly execute
 gcc/g++ (or make, etc.) to cross-compile applications
 
-Example:
+Examples:
 
-    docker run -ti --rm -v '${PWD}:/mnt' [Image] i686-w64-mingw32-gcc test.c
+    docker run -ti --rm -v `"${PWD}":/mnt` [Image] i686-w64-mingw32-gcc test.c
+
+    docker run -ti --rm -v `"${PWD}":/mnt` [Image] x86_64-w64-mingw32-gcc test.c
 
 For builds that use autotools, add the following arguments:
 
@@ -100,5 +99,3 @@ For 64-bit executables (Shows up as PE32+ via the file command):
 [binutils]: https://www.gnu.org/software/binutils/
 [mingw-w64]: https://mingw-w64.org/
 [gcc]: https://gcc.gnu.org/
-[nasm]: https://nasm.us/
-[nvcc]: https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html
