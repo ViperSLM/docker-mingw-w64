@@ -30,7 +30,7 @@ Append [Image name] with a name you want to choose for the image. (e.g. mingw)
 
 # Usage
 There are many ways on how you can use this Docker image. You can use it to directly execute
-gcc/g++ or make, etc to cross-compile applications
+gcc/g++ (or make, etc.) to cross-compile applications
 
 Example:
 
