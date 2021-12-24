@@ -14,7 +14,7 @@ Extra binaries:
 
 * extra Ubuntu packages: `wget`, `patch`, `bison`, `flex`, `yasm`, `make`, `ninja`, `meson`, `zip`, `dos2unix`.
 
-Binaries that are custom built are installed into '/usr/local' which will have a prefix associated with it (i686-w64-mingw32 for 32-bit, x86_64-w64-mingw32 for 64-bit)
+Binaries that are custom built are installed into `/usr/local` which will have a prefix associated with it (`i686-w64-mingw32` for 32-bit, `x86_64-w64-mingw32` for 64-bit)
 This image also contains [pkg-config][] specifically compiled for both toolchains (prefixed) which looks for packages in either toolchain's root folder. 
 
 # Building
@@ -28,7 +28,8 @@ Append [Image name] with a name you want to choose for the image. (e.g. mingw)
 There are many ways on how you can use this Docker image. You can use it to directly execute
 gcc/g++ or make, etc to cross-compile applications
 
-Example: `docker run -ti --rm -v '${PWD}:/mnt' [Image] i686-w64-mingw32-gcc test.c`
+Example:
+    docker run -ti --rm -v '${PWD}:/mnt' [Image] i686-w64-mingw32-gcc test.c
 
 For builds that use autotools, add the following arguments:
 
