@@ -14,7 +14,10 @@ Extra binaries:
 
 * extra Ubuntu packages: `wget`, `patch`, `bison`, `flex`, `yasm`, `make`, `ninja`, `meson`, `zip`, `dos2unix`.
 
-Binaries that are custom built are installed into `/usr/local` which will have a prefix associated with it (`i686-w64-mingw32` for 32-bit, `x86_64-w64-mingw32` for 64-bit)
+Binaries that are custom built are installed into `/usr/local` which will have a prefix associated with it.
+
+(`i686-w64-mingw32` for 32-bit, `x86_64-w64-mingw32` for 64-bit)
+
 This image also contains [pkg-config][] specifically compiled for both toolchains (prefixed) which looks for packages in either toolchain's root folder. 
 
 # Building
@@ -29,6 +32,7 @@ There are many ways on how you can use this Docker image. You can use it to dire
 gcc/g++ or make, etc to cross-compile applications
 
 Example:
+
     docker run -ti --rm -v '${PWD}:/mnt' [Image] i686-w64-mingw32-gcc test.c
 
 For builds that use autotools, add the following arguments:
@@ -42,16 +46,31 @@ For builds that use CMake, you can supply the included toolchain by adding the f
 
 Alternatively, if you prefer to manually set the settings yourself or if a CMake project doesn't properly process a line or two, you can add the following arguments:
 
+32-bit (i686):
+    
     -DCMAKE_SYSTEM_NAME=Windows \
-    -DCMAKE_SYSTEM_PROCESSOR=AMD64 \
-    -DCMAKE_INSTALL_PREFIX=${MINGW} \
-    -DCMAKE_FIND_ROOT_PATH=${MINGW} \
+    -DCMAKE_SYSTEM_PROCESSOR=i686 \
+    -DCMAKE_INSTALL_PREFIX=${MINGW_R} \
+    -DCMAKE_FIND_ROOT_PATH=${MINGW_R} \
     -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
     -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY \
     -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
-    -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc \
-    -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ \
-    -DCMAKE_RC_COMPILER=x86_64-w64-mingw32-windres \
+    -DCMAKE_C_COMPILER=${MINGW}-gcc \
+    -DCMAKE_CXX_COMPILER=${MINGW}-g++ \
+    -DCMAKE_RC_COMPILER=${MINGW}-windres \
+
+64-bit (AMD64):
+
+    -DCMAKE_SYSTEM_NAME=Windows \
+    -DCMAKE_SYSTEM_PROCESSOR=AMD64 \
+    -DCMAKE_INSTALL_PREFIX=${MINGW_64_R} \
+    -DCMAKE_FIND_ROOT_PATH=${MINGW_64_R} \
+    -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
+    -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY \
+    -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
+    -DCMAKE_C_COMPILER=${MINGW_64}-gcc \
+    -DCMAKE_CXX_COMPILER=${MINGW_64}-g++ \
+    -DCMAKE_RC_COMPILER=${MINGW_64}-windres \
 
 # FindDLL Shell Script
 This shell script lists down required DLL files the specified executable needs.
