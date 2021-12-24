@@ -1,48 +1,34 @@
-# MinGW-W64 Docker Image
+# MinGW-W64 Docker Image (Dual Architectures)
+This Docker image builds a [mingw-w64][] toolchain which can target either 32-bit or 64-bit Window via Ubuntu 20.04
+(64-bit toolchain not implemented yet!)
 
-Builds [mingw-w64][] toolchain in docker for targeting 64-bit Windows from Ubuntu 20.04.
 
-This docker image contains the following software built from source:
-
+The following software is built from source:
 * [pkg-config][] v0.29.2
 * [cmake][] v3.21.3
 * [binutils][] v2.37
 * [mingw-w64][] v9.0.0
 * [gcc][] v11.2.0
-* [nasm][] v2.15.05
 
 Extra binaries:
 
-* extra Ubuntu packages: `wget`, `patch`, `bison`, `flex`, `yasm`, `make`, `ninja`, `meson`, `zip`, `vim`, `nano`, `dos2unix`.
-* [nvcc][] v11.4.2
+* extra Ubuntu packages: `wget`, `patch`, `bison`, `flex`, `yasm`, `make`, `ninja`, `meson`, `zip`, `dos2unix`.
 
-Custom built binaries are installed into `/usr/local` prefix. [pkg-config][] will look for packages in `/mingw` prefix. `nvcc` is available in `/usr/local/cuda/bin` folder.
+Binaries that are custom built are installed into '/usr/local' which will have a prefix associated with it (i686-w64-mingw32 for 32-bit, x86_64-w64-mingw32 for 64-bit)
+This image also contains [pkg-config][] specifically compiled for both toolchains (prefixed) which looks for packages in either toolchain's root folder. 
 
 # Building
 To build this docker image, type in the following command while inside the repository:
 
-    docker build -t mingw-w64 .
+    docker build -t [Image name] .
 
-This works on a Linux system with Docker already installed, or a Windows 10 system running Docker Desktop.
+Append [Image name] with a name you want to choose for the image. (e.g. mingw)
 
-# Using
+# Usage
+There are many ways on how you can use this Docker image. You can use it to directly execute
+gcc/g++ or make, etc to cross-compile applications
 
-The `sources.list` inside the repo uses a mirror located in Australia. You may substitute this with your own sources.list file if you wish.
-
-If you prefer to use the default ubuntu mirror, simply remove the following line from the Dockerfile `(Line 18)`:
-`COPY sources.list /etc/apt/sources.list`
-
-To start a new container with this image, type in the following:
-
-    docker run -d -ti --name [Container name] mingw-w64
-    
-You can choose whether if you want the new container to have a name or not. Simply omit `--name` from the command line if you don't want to name the container.
-
-For executing shell scripts, makefiles or other build scripts, you can type in the following:
-
-    docker run --rm -ti -v `pwd`:/mnt mingw-w64 ./build.sh
-
-Replace the `./build.sh` with your build/shell script
+Example: `docker run -ti --rm -v '${PWD}:/mnt' [Image] i686-w64-mingw32-gcc test.c`
 
 For builds that use autotools, add the following arguments:
 
@@ -51,9 +37,9 @@ For builds that use autotools, add the following arguments:
 
 For builds that use CMake, you can supply the included toolchain by adding the following argument:
 
-    -DCMAKE_TOOLCHAIN_FILE=${MINGW_CMAKE}
+    -DCMAKE_TOOLCHAIN_FILE=/usr/local/i686-w64-mingw32/toolchain.cmake
 
-Alternatively, if you prefer to manually set the settings yourself or if a CMake project doesn't properly process a line or two, add the following arguments:
+Alternatively, if you prefer to manually set the settings yourself or if a CMake project doesn't properly process a line or two, you can add the following arguments:
 
     -DCMAKE_SYSTEM_NAME=Windows \
     -DCMAKE_SYSTEM_PROCESSOR=AMD64 \
@@ -66,15 +52,14 @@ Alternatively, if you prefer to manually set the settings yourself or if a CMake
     -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ \
     -DCMAKE_RC_COMPILER=x86_64-w64-mingw32-windres \
 
-# FindDLL Bash Script
-This convenient utility will list down DLL files that the specified executable needs.
-    
-    Usage: finddll [.exe]
+# FindDLL Shell Script
+This shell script lists down required DLL files the specified executable needs.
 
-Here's an example on how it's used:
+For 32-bit executables (Shows up as PE32 via the file command):
+	`finddll [.exe]`
 
-![image](https://user-images.githubusercontent.com/61650364/111956663-f2096c80-8b3a-11eb-9839-362a6250b877.png)
-
+For 64-bit executables (Shows up as PE32+ via the file command):
+	`finddll_64 [.exe]`
 
 [pkg-config]: https://www.freedesktop.org/wiki/Software/pkg-config/
 [cmake]: https://cmake.org/
