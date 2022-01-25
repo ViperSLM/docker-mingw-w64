@@ -16,7 +16,7 @@ Binaries that are custom built are installed into `/usr/local` which will have a
 
 (`x86_64-w64-mingw32` for 64-bit)
 
-This image also contains [pkg-config][] specifically compiled for both toolchains (prefixed) which looks for packages in either toolchain's root folder. 
+This image also contains [pkg-config][] specifically compiled for this toolchain (prefixed) which looks for packages in either toolchain's root folder. 
 
 # Building
 To build this docker image, type in the following command while inside the repository:
