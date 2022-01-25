@@ -88,6 +88,8 @@ RUN set -ex \
     \
     && echo "Installing MinGW-W64 Headers..." \
     && tar xjf ../packages/mingw-w64-v${MINGW_VERSION}.tar.bz2 \
+    && cat /temp/patches/intrin_fix.patch | patch -d mingw-w64-v${MINGW_VERSION} -p 1 \
+    && cat /temp/patches/intrin-impl_fix.patch | patch -d mingw-w64-v${MINGW_VERSION} -p 1 \
     && mkdir mingw-w64 && cd mingw-w64 \
     && ../mingw-w64-v${MINGW_VERSION}/mingw-w64-headers/configure \
         --prefix=${MINGW_R} \
@@ -119,7 +121,7 @@ RUN set -ex \
         --disable-lto \
         --disable-nls \
         --disable-werror \
-    && make all-gcc -j`nproc` \
+    && make -j`nproc` all-gcc \
     && make install-gcc \
     && cd .. \
     \
@@ -198,6 +200,8 @@ RUN set -ex \
     \
     && echo "Installing MinGW-W64 Headers..." \
     && tar xjf ../packages/mingw-w64-v${MINGW_VERSION}.tar.bz2 \
+    && cat /temp/patches/intrin_fix.patch | patch -d mingw-w64-v${MINGW_VERSION} -p 1 \
+    && cat /temp/patches/intrin-impl_fix.patch | patch -d mingw-w64-v${MINGW_VERSION} -p 1 \
     && mkdir mingw-w64 && cd mingw-w64 \
     && ../mingw-w64-v${MINGW_VERSION}/mingw-w64-headers/configure \
         --prefix=${MINGW_64_R} \
@@ -229,7 +233,7 @@ RUN set -ex \
         --disable-lto \
         --disable-nls \
         --disable-werror \
-    && make all-gcc -j`nproc` \
+    && make -j`nproc` all-gcc \
     && make install-gcc \
     && cd .. \
     \
