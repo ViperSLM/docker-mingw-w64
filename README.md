@@ -44,7 +44,7 @@ For builds that use autotools, append the following arguments:
     --prefix=${MINGW_64_R} \
     --host=${MINGW_64} \
 
-For builds that use CMake, you can supply the included toolchain by adding either:
+For builds that use CMake, you can supply the included toolchain by appending this argument:
     
 64-bit (AMD64):
 
