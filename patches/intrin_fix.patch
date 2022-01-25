@@ -1,0 +1,14 @@
+diff --git a/mingw-w64-headers/crt/intrin.h b/mingw-w64-headers/crt/intrin.h
+--- a/mingw-w64-headers/crt/intrin.h	2021-05-22 12:34:25.000000000 +0000
++++ b/mingw-w64-headers/crt/intrin.h	2022-01-25 04:47:00.094073037 +0000
+@@ -67,6 +67,10 @@
+ #endif
+ 
+ #include <x86intrin.h>
++#include <cpuid.h>
++
++/* Undefine the GCC one taking 5 parameters to prefer the mingw-w64 one. */
++#undef __cpuid
+ 
+ /* Before 4.9.2, x86intrin.h had broken versions of these. */
+ #undef _lrotl
