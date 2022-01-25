@@ -2,10 +2,8 @@ FROM ubuntu:20.04
 WORKDIR /mnt
 SHELL [ "/bin/bash", "-c" ]
 
-# Environment variables (Toolchain names, root location have an 'R' suffix)
-ENV MINGW=i686-w64-mingw32
+# Environment variables (Toolchain names, root location has a 'R' suffix)
 ENV MINGW_64=x86_64-w64-mingw32
-ENV MINGW_R=/usr/local/i686-w64-mingw32
 ENV MINGW_64_R=/usr/local/x86_64-w64-mingw32
 
 ARG PKG_CONFIG_VERSION=0.29.2
@@ -48,118 +46,6 @@ RUN set -ex \
     && cd .. \
     && echo "Cleaning up..." \
     && rm -r cmake-${CMAKE_VERSION} \
-    \
-    && echo "Installing i686 MinGW-W64 Toolchain..." \
-    && mkdir -p ${MINGW_R}/include ${MINGW_R}/lib/pkgconfig \
-    && chmod 0777 -R /mnt ${MINGW_R} \
-    && mkdir /build-i686 && cd /build-i686 \
-    \
-    && echo "Compiling pkg-config v${PKG_CONFIG_VERSION}..." \
-    && tar xzf ../packages/pkg-config-${PKG_CONFIG_VERSION}.tar.gz && cd pkg-config-${PKG_CONFIG_VERSION} \
-    && ./configure \
-        --prefix=${MINGW_R} \
-        --with-pc-path=${MINGW_R}/lib/pkgconfig \
-        --with-internal-glib \
-        --disable-shared \
-        --disable-nls \
-    && make -j`nproc` \
-    && make install \
-    && rm ${MINGW_R}/bin/x86_64-unknown-linux-gnu-pkg-config \
-    && ln -f ${MINGW_R}/bin/pkg-config /usr/local/bin/${MINGW}-pkg-config \
-    && cd .. \
-    \
-    && echo "Compiling Binutils..." \
-    && tar xJf ../packages/binutils-${BINUTILS_VERSION}.tar.xz \
-    && cd binutils-${BINUTILS_VERSION} \
-    && ./configure \
-        --prefix=/usr/local \
-        --target=${MINGW} \
-        --disable-shared \
-        --enable-static \
-        --disable-lto \
-        --disable-plugins \
-        --disable-multilib \
-        --disable-nls \
-        --disable-werror \
-        --with-system-zlib \
-    && make -j`nproc` \
-    && make install \
-    && cd .. \
-    \
-    && echo "Installing MinGW-W64 Headers..." \
-    && tar xjf ../packages/mingw-w64-v${MINGW_VERSION}.tar.bz2 \
-    && cat /temp/patches/intrin_fix.patch | patch -d mingw-w64-v${MINGW_VERSION} -p 1 \
-    && cat /temp/patches/intrin-impl_fix.patch | patch -d mingw-w64-v${MINGW_VERSION} -p 1 \
-    && mkdir mingw-w64 && cd mingw-w64 \
-    && ../mingw-w64-v${MINGW_VERSION}/mingw-w64-headers/configure \
-        --prefix=${MINGW_R} \
-        --host=${MINGW} \
-        --enable-sdk=all \
-        --enable-secure-api \
-    && make install \
-    && cd .. \
-    \
-    && echo "Compiling GCC (Compiler)..." \
-    && tar xJf ../packages/gcc-${GCC_VERSION}.tar.xz \
-    && echo "Patching..." \
-    && cat ../packages/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch | patch -d gcc-${GCC_VERSION} -p 1 \
-    && mkdir gcc && cd gcc \
-    && ../gcc-${GCC_VERSION}/configure \
-        --prefix=/usr/local \
-        --target=${MINGW} \
-        --enable-languages=c,c++ \
-        --disable-shared \
-        --enable-static \
-        --enable-threads=posix \
-        --with-system-zlib \
-        --enable-libgomp \
-        --enable-libatomic \
-        --enable-graphite \
-        --disable-libstdcxx-pch \
-        --disable-libstdcxx-debug \
-        --disable-multilib \
-        --disable-lto \
-        --disable-nls \
-        --disable-werror \
-    && make -j`nproc` all-gcc \
-    && make install-gcc \
-    && cd .. \
-    \
-    && echo "Compiling MinGW-W64 Runtime and Libraries..." \
-    && cd mingw-w64 \
-    && ../mingw-w64-v${MINGW_VERSION}/mingw-w64-crt/configure \
-        --prefix=${MINGW_R} \
-        --host=${MINGW} \
-        --enable-wildcard \
-        --enable-lib32 \
-        --disable-lib64 \
-    && make -j`nproc` \
-    && make install \
-    && ../mingw-w64-v${MINGW_VERSION}/mingw-w64-libraries/winpthreads/configure \
-        --prefix=${MINGW_R} \
-        --host=${MINGW} \
-        --enable-static \
-        --disable-shared \
-    && make -j`nproc` \
-    && make install \
-    && cd .. \
-    \
-    && echo "Compiling GCC (Full)..." \
-    && cd gcc \
-    && make -j`nproc` \
-    && make install \
-    && cd .. \
-    \
-    && echo "Cleaning up..." \
-    && cd / && rm -rf build-i686 \
-    && echo "Copying FindDLL and CMake toolchain..." \
-    && cp -r /temp/finddll/finddll.sh /usr/local/bin/finddll \
-    && dos2unix /usr/local/bin/finddll \
-    && chmod +x /usr/local/bin/finddll \
-    && cp -r /temp/toolchains/i686.cmake ${MINGW_R}/toolchain.cmake \
-    && dos2unix ${MINGW_R}/toolchain.cmake \
-    \
-    && echo "i686 MinGW-W64 toolchain has been successfully installed!" \
     \
     && echo "Installing x86_64 MinGW-W64 Toolchain..." \
     && mkdir -p ${MINGW_64_R}/include ${MINGW_64_R}/lib/pkgconfig \
