@@ -1,5 +1,5 @@
-# MinGW-W64 Docker Image (Dual Architectures)
-This Docker image builds a [mingw-w64][] toolchain which can target either 32-bit or 64-bit Windows via Ubuntu 20.04
+# MinGW-W64 Docker Image (32-bit Windows only)
+This Docker image builds a [mingw-w64][] toolchain which can target 32-bit Windows via Ubuntu 20.04
 
 The following software is built from source:
 * [pkg-config][] v0.29.2
