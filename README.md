@@ -3,10 +3,10 @@ This Docker image builds a [mingw-w64][] toolchain which can target either 32-bi
 
 The following software is built from source:
 * [pkg-config][] v0.29.2
-* [cmake][] v3.21.3
-* [binutils][] v2.37
-* [mingw-w64][] v9.0.0
-* [gcc][] v11.2.0
+* [cmake][] v3.23.1
+* [binutils][] v2.38
+* [mingw-w64][] v10.0.0
+* [gcc][] v12.1.0
 
 Extra binaries:
 
