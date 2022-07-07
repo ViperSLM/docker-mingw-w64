@@ -1,5 +1,6 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 WORKDIR /mnt
+
 SHELL [ "/bin/bash", "-c" ]
 
 # Environment variables (Toolchain names, root location have an 'R' suffix)
@@ -9,10 +10,10 @@ ENV MINGW_R=/usr/local/i686-w64-mingw32
 ENV MINGW_64_R=/usr/local/x86_64-w64-mingw32
 
 ARG PKG_CONFIG_VERSION=0.29.2
-ARG CMAKE_VERSION=3.21.3
-ARG BINUTILS_VERSION=2.37
-ARG MINGW_VERSION=9.0.0
-ARG GCC_VERSION=11.2.0
+ARG CMAKE_VERSION=3.23.1
+ARG BINUTILS_VERSION=2.38
+ARG MINGW_VERSION=10.0.0
+ARG GCC_VERSION=12.1.0
 
 COPY . /temp
 
@@ -21,20 +22,18 @@ RUN set -ex \
     && echo "Upgrading & Installing required packages. Grab a coffee or whatever you fancy while you're waiting :)" \
     && DEBIAN_FRONTEND=noninteractive apt-get upgrade --no-install-recommends -qq -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -qq -y \
-        ca-certificates gcc-10 g++-10 zlib1g-dev libssl-dev libgmp-dev libmpfr-dev \
-        libmpc-dev libisl-dev libssl1.1 libgmp10 libmpfr6 libmpc3 libisl22 xz-utils \
-        python python-lxml python-mako ninja-build texinfo meson gnupg bzip2 patch \
+        ca-certificates gcc g++ zlib1g-dev libssl-dev libgmp-dev libmpfr-dev \
+        libmpc-dev libisl-dev libssl3 libgmp10 libmpfr6 libmpc3 libisl23 xz-utils \
+        ninja-build texinfo meson gnupg bzip2 patch \
         gperf bison file flex make yasm wget zip git dos2unix \
-    && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 1000 --slave /usr/bin/g++ g++ /usr/bin/g++-10 \
     \
     && mkdir /packages && cd /packages \
     && echo "Downloading required packages..." \
-    && wget -q https://pkg-config.freedesktop.org/releases/pkg-config-${PKG_CONFIG_VERSION}.tar.gz \
-    && wget -q https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz \
-    && wget -q https://ftp.gnu.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.xz \
-    && wget -q https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/mingw-w64-v${MINGW_VERSION}.tar.bz2 \
-    && wget -q https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.xz \
-    && wget -q https://raw.githubusercontent.com/msys2/MINGW-packages/master/mingw-w64-gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch \
+    && wget https://pkg-config.freedesktop.org/releases/pkg-config-${PKG_CONFIG_VERSION}.tar.gz \
+    && wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz \
+    && wget http://ftpmirror.gnu.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.xz \
+    && wget https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/mingw-w64-v${MINGW_VERSION}.tar.bz2 \
+    && wget http://ftpmirror.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.xz \
     && cd .. \
     \
     && echo "Installing CMake..." \
@@ -88,21 +87,16 @@ RUN set -ex \
     \
     && echo "Installing MinGW-W64 Headers..." \
     && tar xjf ../packages/mingw-w64-v${MINGW_VERSION}.tar.bz2 \
-    && cat /temp/patches/intrin_fix.patch | patch -d mingw-w64-v${MINGW_VERSION} -p 1 \
-    && cat /temp/patches/intrin-impl_fix.patch | patch -d mingw-w64-v${MINGW_VERSION} -p 1 \
     && mkdir mingw-w64 && cd mingw-w64 \
     && ../mingw-w64-v${MINGW_VERSION}/mingw-w64-headers/configure \
         --prefix=${MINGW_R} \
         --host=${MINGW} \
         --enable-sdk=all \
-        --enable-secure-api \
     && make install \
     && cd .. \
     \
     && echo "Compiling GCC (Compiler)..." \
     && tar xJf ../packages/gcc-${GCC_VERSION}.tar.xz \
-    && echo "Patching..." \
-    && cat ../packages/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch | patch -d gcc-${GCC_VERSION} -p 1 \
     && mkdir gcc && cd gcc \
     && ../gcc-${GCC_VERSION}/configure \
         --prefix=/usr/local \
@@ -200,21 +194,17 @@ RUN set -ex \
     \
     && echo "Installing MinGW-W64 Headers..." \
     && tar xjf ../packages/mingw-w64-v${MINGW_VERSION}.tar.bz2 \
-    && cat /temp/patches/intrin_fix.patch | patch -d mingw-w64-v${MINGW_VERSION} -p 1 \
-    && cat /temp/patches/intrin-impl_fix.patch | patch -d mingw-w64-v${MINGW_VERSION} -p 1 \
     && mkdir mingw-w64 && cd mingw-w64 \
     && ../mingw-w64-v${MINGW_VERSION}/mingw-w64-headers/configure \
         --prefix=${MINGW_64_R} \
         --host=${MINGW_64} \
         --enable-sdk=all \
-        --enable-secure-api \
     && make install \
     && cd .. \
     \
     && echo "Compiling GCC (Compiler)..." \
     && tar xJf ../packages/gcc-${GCC_VERSION}.tar.xz \
     && echo "Patching..." \
-    && cat ../packages/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch | patch -d gcc-${GCC_VERSION} -p 1 \
     && mkdir gcc && cd gcc \
     && ../gcc-${GCC_VERSION}/configure \
         --prefix=/usr/local \
@@ -274,7 +264,7 @@ RUN set -ex \
     && echo "x86_64 MinGW-W64 toolchain has been successfully installed!" \
     \
     && echo "Cleaning up..." \
-    && apt-get remove -qq --purge -y gcc-10 g++-10 zlib1g-dev libssl-dev libgmp-dev libmpfr-dev libmpc-dev libisl-dev python-lxml python-mako \
+    && apt-get remove -qq --purge -y gcc g++ zlib1g-dev libssl-dev libgmp-dev libmpfr-dev libmpc-dev libisl-dev \
     && rm -rf /temp \
     && rm -rf /packages \
     \
